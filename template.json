@@ -1,0 +1,46 @@
+{
+    "post-processors": [
+	{
+	    "type": "vagrant",
+	    "override": {
+		"virtualbox": {
+		    "output": "dvwa-virtualbox.box"
+		}
+	    }
+	}
+    ],
+    "builders": [
+	{
+	    "type": "virtualbox-iso",
+	    "boot_command": [
+		"<esc><wait>",
+		"/install.amd/vmlinuz<wait>",
+		" initrd=/install.amd/initrd.gz<wait>",  
+		" debian-installer/locale=en_US<wait>",
+		" keyboard-configuration/xkb-keymap=us<wait>",
+		" netcfg/choose_interface=auto<wait>",
+		" netcfg/get_hostname=dvwa<wait>",
+		" netcfg/get_domain=vulnnet<wait>",
+		" preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<wait>",
+		" --- quiet <wait>",
+		"<enter><wait>"
+	    ],
+	    "boot_wait": "10s",
+	    "disk_size": 40960,
+	    "guest_os_type": "Debian_64",
+	    "http_directory": "http",
+	    "iso_checksum": "9479c5c2df72ae3878116c43fb42eefae53d1fe363ce514a6afc8289064b9f5f",
+	    "iso_checksum_type": "sha256",
+	    "iso_url": "http://cdimage.debian.org/debian-cd/8.6.0/amd64/iso-cd/debian-8.6.0-amd64-netinst.iso",
+	    "ssh_username": "vagrant",
+	    "ssh_password": "vagrant",
+	    "ssh_port": 22,
+	    "ssh_wait_timeout": "10000s",
+	    "shutdown_command": "echo 'shutdown -P now' > /tmp/shutdown.sh; echo 'vagrant'|sudo -S sh '/tmp/shutdown.sh'",
+	    "vboxmanage": [
+		[ "modifyvm", "{{.Name}}", "--memory", "512" ],
+		[ "modifyvm", "{{.Name}}", "--cpus", "1" ]
+	    ]
+	}
+    ]
+}
